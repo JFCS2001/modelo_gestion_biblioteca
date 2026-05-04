@@ -6,6 +6,7 @@ package aplicativo_biblioteca;
 
 import javax.swing.SwingUtilities;
 import vista_biblioteca.panel_biblioteca;
+import conexion.conexion_sqlite;
 
 /**
  *
@@ -17,6 +18,8 @@ public class Aplicativo_biblioteca {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        conexion_sqlite.estructuraTablas();
         SwingUtilities.invokeLater(() -> new panel_biblioteca().setVisible(true));
     }
     
