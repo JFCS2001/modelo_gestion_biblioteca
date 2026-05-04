@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class conexion_sqlite {
 
-    private static final String URL = "jdbc:sqlite:[ARCHIVO BD]";
+    private static final String URL = "jdbc:sqlite:biblioteca.bd";
 
     public static Connection getConnection() throws SQLException {
         try {
@@ -23,5 +23,9 @@ public class conexion_sqlite {
             System.err.println(e);
         }
         return DriverManager.getConnection(URL);
+    }
+
+    public static void estructuraTablas() {
+        
     }
 }

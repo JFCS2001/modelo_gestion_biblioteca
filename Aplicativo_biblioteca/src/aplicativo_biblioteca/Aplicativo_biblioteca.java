@@ -4,6 +4,9 @@
  */
 package aplicativo_biblioteca;
 
+import javax.swing.SwingUtilities;
+import vista_biblioteca.panel_biblioteca;
+
 /**
  *
  * @author Juan
@@ -14,7 +17,7 @@ public class Aplicativo_biblioteca {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        SwingUtilities.invokeLater(() -> new panel_biblioteca().setVisible(true));
     }
     
 }
