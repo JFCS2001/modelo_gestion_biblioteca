@@ -269,7 +269,7 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="label1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTabbedPane" alignment="0" min="-2" pref="799" max="-2" attributes="0"/>
+                              <Component id="jTabbedPane" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -398,7 +398,7 @@
                                   <Component id="jLbl_titulo" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTxtTitulo" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="223" max="32767" attributes="0"/>
+                              <EmptySpace pref="31" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLbl_editorial" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTxtEditorial" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -527,7 +527,7 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jScrollPane2" min="-2" pref="850" max="-2" attributes="0"/>
+                          <Component id="jScrollPane2" min="-2" pref="624" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jPanelDatosUsuario" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -636,7 +636,7 @@
                                   <Component id="jLblCorreo" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTxtCorreo" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="233" max="32767" attributes="0"/>
+                              <EmptySpace pref="41" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -745,7 +745,7 @@
                           <Component id="jScrollPane6" min="-2" pref="667" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="198" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -868,7 +868,7 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <EmptySpace pref="92" max="32767" attributes="0"/>
+                              <EmptySpace pref="23" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1153,7 +1153,7 @@
                                   </Group>
                                   <Component id="jLabel7" alignment="0" min="-2" pref="357" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="44" max="32767" attributes="0"/>
+                              <EmptySpace pref="32" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1304,7 +1304,7 @@
                       <Component id="Jbtn_eliminar" min="-2" pref="114" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="Jbtn_actualizar" min="-2" pref="114" max="-2" attributes="0"/>
-                      <EmptySpace pref="666" max="32767" attributes="0"/>
+                      <EmptySpace pref="933" max="32767" attributes="0"/>
                       <Component id="Jbtn_nuevo" min="-2" pref="139" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="369" max="-2" attributes="0"/>
                   </Group>

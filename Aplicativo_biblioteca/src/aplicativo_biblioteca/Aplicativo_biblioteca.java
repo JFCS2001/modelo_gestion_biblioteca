@@ -5,7 +5,7 @@
 package aplicativo_biblioteca;
 
 import javax.swing.SwingUtilities;
-import vista_biblioteca.panel_biblioteca;
+import vista_biblioteca.Loguin;
 import conexion.conexion_sqlite;
 
 /**
@@ -20,7 +20,7 @@ public class Aplicativo_biblioteca {
     public static void main(String[] args) {
         
         conexion_sqlite.estructuraTablas();
-        SwingUtilities.invokeLater(() -> new panel_biblioteca().setVisible(true));
+        SwingUtilities.invokeLater(() -> new Loguin().setVisible(true));
     }
     
 }
