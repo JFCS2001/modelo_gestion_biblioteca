@@ -15,7 +15,7 @@ import java.util.List;
  * @author Juan
  */
 public class LibroController {
-    // CREATE: Insertar un nuevo libro
+    
     public boolean insertar(Libro libro) {
         String sql = "INSERT INTO Libro(titulo, autor, anio_publ, categoria, cantidad, isbn) VALUES(?,?,?,?,?,?)";
         try (Connection conn = conexion_sqlite.getConnection();
@@ -36,7 +36,7 @@ public class LibroController {
         }
     }
 
-    // READ: Listar todos los libros
+    
     public List<Libro> listar() {
         List<Libro> lista = new ArrayList<>();
         String sql = "SELECT * FROM Libro";
@@ -61,7 +61,7 @@ public class LibroController {
         return lista;
     }
 
-    // DELETE: Eliminar por ID
+    
     public boolean eliminar(int id) {
         String sql = "DELETE FROM Libro WHERE IdLibro = ?";
         try (Connection conn = conexion_sqlite.getConnection();
