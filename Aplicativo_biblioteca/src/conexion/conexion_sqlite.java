@@ -4,6 +4,9 @@
  */
 package conexion;
 
+import Object.Bibliotecario;
+import Object.Cliente;
+import Object.Libro;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -63,20 +66,41 @@ public class conexion_sqlite {
                 + "FOREIGN KEY(IdBibliotecario) REFERENCES Bibliotecario(IdBibliotecario),"
                 + "FOREIGN KEY(IdLibro) REFERENCES Libro(IdLibro));";
 
-        try (Connection conn = getConnection(); 
-             Statement stmt = conn.createStatement()) {
-            
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
+
             stmt.execute("PRAGMA foreign_keys = ON;");
-            
+
             stmt.execute(sqlBibliotecario);
             stmt.execute(sqlLibro);
             stmt.execute(sqlCliente);
             stmt.execute(sqlPrestamo);
-            
+
             System.out.println("Base de datos e hilos de tablas inicializados correctamente.");
-            
+
         } catch (SQLException e) {
             System.err.println("Error al crear la estructura: " + e.getMessage());
         }
+    }
+
+    public static void poblarDatosPrueba() {
+        System.out.println("Insertando datos quemados de prueba...");
+
+        controller.BibliotecarioController bController = new controller.BibliotecarioController();
+        controller.LibroController lController = new controller.LibroController();
+        controller.ClienteController cController = new controller.ClienteController();
+        controller.PrestamoController pController = new controller.PrestamoController();
+
+        Bibliotecario biblio = new Bibliotecario(0, "Juan Felipe", "juan@uts.edu.co", "3151234567", "admin", "1234");
+        bController.insertar(biblio);
+
+        Libro libro1 = new Libro(0, "Cien años de soledad", "Gabriel García Márquez", 1967, "Novela", 5, "978-0307474728");
+        Libro libro2 = new Libro(0, "Don Quijote de la Mancha", "Miguel de Cervantes", 1605, "Clásico", 3, "978-8424938093");
+        lController.insertar(libro1);
+        lController.insertar(libro2);
+
+        Cliente cliente1 = new Cliente(0, "Camila Gómez", "camila@gmail.com", "3209876543", "Calle 10 #15-20", 0.0);
+        cController.insertar(cliente1);
+
+        System.out.println("¡Datos de prueba guardados con éxito en biblioteca.bd!");
     }
 }

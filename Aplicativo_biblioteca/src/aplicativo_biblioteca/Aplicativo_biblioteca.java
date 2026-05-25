@@ -20,6 +20,9 @@ public class Aplicativo_biblioteca {
     public static void main(String[] args) {
         
         conexion_sqlite.estructuraTablas();
+        
+        conexion_sqlite.poblarDatosPrueba();
+        
         SwingUtilities.invokeLater(() -> new Loguin().setVisible(true));
     }
     

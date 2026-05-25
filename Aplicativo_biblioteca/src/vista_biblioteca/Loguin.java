@@ -31,11 +31,11 @@ public class Loguin extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        UserText = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        ClaveText = new javax.swing.JPasswordField();
+        IngresarBtn = new javax.swing.JButton();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -76,9 +76,9 @@ public class Loguin extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        UserText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                UserTextActionPerformed(evt);
             }
         });
 
@@ -88,17 +88,17 @@ public class Loguin extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel3.setText("Usuario");
 
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        ClaveText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                ClaveTextActionPerformed(evt);
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButton1.setText("Ingresar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        IngresarBtn.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        IngresarBtn.setText("Ingresar");
+        IngresarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                IngresarBtnActionPerformed(evt);
             }
         });
 
@@ -119,14 +119,14 @@ public class Loguin extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(UserText, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGap(123, 123, 123)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(IngresarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGap(43, 43, 43)
-                                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(ClaveText, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 40, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -138,13 +138,13 @@ public class Loguin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(UserText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ClaveText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(IngresarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
         );
 
@@ -183,17 +183,57 @@ public class Loguin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void UserTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserTextActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_UserTextActionPerformed
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void ClaveTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClaveTextActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_ClaveTextActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void IngresarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IngresarBtnActionPerformed
+
+        String usuarioIngresado = UserText.getText().trim();
+
+        String claveIngresada = new String(ClaveText.getPassword()).trim();
+
+        if (usuarioIngresado.isEmpty() || claveIngresada.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Por favor, complete todos los campos de inicio de sesión.",
+                    "Campos Vacíos",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        controller.BibliotecarioController bController = new controller.BibliotecarioController();
+
+        boolean accesoConcedido = bController.validarLogin(usuarioIngresado, claveIngresada);
+
+        if (accesoConcedido) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "¡Bienvenido al sistema de biblioteca, " + usuarioIngresado + "!",
+                    "Inicio de Sesión Exitoso",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+            vista_biblioteca.ProyectoBiblioteca panelAdmin = new vista_biblioteca.ProyectoBiblioteca();
+
+            panelAdmin.setLocationRelativeTo(null);
+
+            panelAdmin.setVisible(true);
+
+            this.dispose();
+
+        } else {
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El usuario o la contraseña ingresada son incorrectos.\nInténtelo nuevamente.",
+                    "Error de Autenticación",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+
+            ClaveText.setText("");
+            UserText.requestFocus();
+        }
+    }//GEN-LAST:event_IngresarBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,7 +271,9 @@ public class Loguin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JPasswordField ClaveText;
+    private javax.swing.JButton IngresarBtn;
+    private javax.swing.JTextField UserText;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
@@ -239,7 +281,5 @@ public class Loguin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
