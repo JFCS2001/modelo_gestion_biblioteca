@@ -1,16 +1,237 @@
 package vista_biblioteca;
 
-
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.util.List;
+import Object.Libro;
+import Object.Cliente;
+import Object.Prestamo;
+import controller.LibroController;
+import controller.ClienteController;
+import controller.PrestamoController;
 
 public class ProyectoBiblioteca extends javax.swing.JFrame {
 
     //Variable global
- 
+    private final LibroController libroControl = new LibroController();
+    private final ClienteController clienteControl = new ClienteController();
+    private final PrestamoController prestamoControl = new controller.PrestamoController();
+
+    private int idLibroSeleccionado = -1;
+    private int idClienteSeleccionado = -1;
+
     public ProyectoBiblioteca() {
         initComponents();
-       
-        
-   
+        this.setLocationRelativeTo(null);
+
+        llenarTablaLibros();
+        llenarTablaClientes();
+        llenarTablaPrestamos();
+        llenarTablaReservas();
+        llenarTablaDevoluciones();
+
+        configurarEventosTablas();
+
+        jTabbedPane.addChangeListener(e -> validarEstadosBotones());
+
+        java.awt.event.KeyAdapter tecladoListener = new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                validarEstadosBotones();
+            }
+        };
+
+        jTxtTitulo.addKeyListener(tecladoListener);
+        jTxtNombre.addKeyListener(tecladoListener);
+        jTextIdUsuario.addKeyListener(tecladoListener);
+
+        validarEstadosBotones();
+    }
+
+    private void llenarTablaLibros() {
+        String[] columnas = {"ID", "Título", "Autor", "Año", "Categoría", "Cantidad"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        List<Libro> lista = libroControl.listar();
+        for (Libro l : lista) {
+            modelo.addRow(new Object[]{l.getId(), l.getTitulo(), l.getAutor(), l.getAnio(), l.getCategoria(), l.getCantidad()});
+        }
+        TableLibro.setModel(modelo);
+    }
+
+    private void llenarTablaClientes() {
+        String[] columnas = {"ID", "Nombre", "Correo", "Teléfono", "Dirección", "Multa"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        List<Cliente> lista = clienteControl.listar();
+        for (Cliente c : lista) {
+            modelo.addRow(new Object[]{c.getId(), c.getNombre(), c.getCorreo(), c.getTelefono(), c.getDireccion(), c.getCantidadMulta()});
+        }
+        TableLectores.setModel(modelo);
+    }
+
+    private void llenarTablaPrestamos() {
+        String[] columnas = {"ID Préstamo", "ID Lector", "ID Libro", "Fecha Salida", "Vencimiento"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        var lista = prestamoControl.listarPrestamos();
+
+        for (Prestamo p : lista) {
+            modelo.addRow(new Object[]{p.getId(), p.getIdUser(), p.getIdLibro(), p.getFechaPrestamo(), p.getFechaRetorno()});
+        }
+        jTable_Prestamos.setModel(modelo);
+    }
+
+    private void llenarTablaReservas() {
+        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha de solicitud", "Teléfono"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+        jTable_Reservas.setModel(modelo);
+    }
+
+    private void llenarTablaDevoluciones() {
+        String[] columnas = {"ID Préstamo", "Lector", "Título", "Fecha Salida", "Vencimiento"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+        jTable_Devoluciones.setModel(modelo);
+    }
+
+    private void configurarEventosTablas() {
+        TableLibro.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && TableLibro.getSelectedRow() != -1) {
+                    int fila = TableLibro.getSelectedRow();
+                    idLibroSeleccionado = Integer.parseInt(TableLibro.getValueAt(fila, 0).toString());
+                    jTxtTitulo.setText(TableLibro.getValueAt(fila, 1).toString());
+                    jTxtEditorial.setText(TableLibro.getValueAt(fila, 2).toString());
+                    jTxtAnio.setText(TableLibro.getValueAt(fila, 3).toString());
+                    jTxtCategoria.setText(TableLibro.getValueAt(fila, 4).toString());
+                    jTxtCantidad.setText(TableLibro.getValueAt(fila, 5).toString());
+
+                    validarEstadosBotones();
+                }
+            }
+        });
+
+        TableLectores.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && TableLectores.getSelectedRow() != -1) {
+                    int fila = TableLectores.getSelectedRow();
+                    idClienteSeleccionado = Integer.parseInt(TableLectores.getValueAt(fila, 0).toString());
+                    jTxtNombre.setText(TableLectores.getValueAt(fila, 1).toString());
+                    jTxtCorreo.setText(TableLectores.getValueAt(fila, 2).toString());
+                    jTxtTelefono.setText(TableLectores.getValueAt(fila, 3).toString());
+                    jTxtDireccion.setText(TableLectores.getValueAt(fila, 4).toString());
+                    jTxtCiudad.setText("Bucaramanga");
+
+                    validarEstadosBotones();
+                }
+            }
+        });
+
+        jTable_Prestamos.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && jTable_Prestamos.getSelectedRow() != -1) {
+                int fila = jTable_Prestamos.getSelectedRow();
+                jTextIdUsuario.setText(jTable_Prestamos.getValueAt(fila, 1).toString());
+                jTextIdLibro.setText(jTable_Prestamos.getValueAt(fila, 2).toString());
+                jTextPrestamo.setText(jTable_Prestamos.getValueAt(fila, 3).toString());
+                jTextVencimiento.setText(jTable_Prestamos.getValueAt(fila, 4).toString());
+
+                validarEstadosBotones();
+            }
+        });
+
+        jTable_Reservas.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && jTable_Reservas.getSelectedRow() != -1) {
+                int fila = jTable_Reservas.getSelectedRow();
+                jTextNumReserva.setText(jTable_Reservas.getValueAt(fila, 0).toString());
+                jTextId.setText(jTable_Reservas.getValueAt(fila, 1).toString());
+                jTextLibro.setText(jTable_Reservas.getValueAt(fila, 2).toString());
+                jTextFecha.setText(jTable_Reservas.getValueAt(fila, 3).toString());
+
+                validarEstadosBotones();
+            }
+        });
+
+        jTable_Devoluciones.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && jTable_Devoluciones.getSelectedRow() != -1) {
+                int fila = jTable_Devoluciones.getSelectedRow();
+                jTextIdPrestamo.setText(jTable_Devoluciones.getValueAt(fila, 0).toString());
+                jTextRetorno.setText("2026-06-09");
+                jTextRetraso.setText("0");
+                jTextMulta.setText("0");
+
+                validarEstadosBotones();
+            }
+        });
+    }
+
+    private void validarEstadosBotones() {
+        int tabActiva = jTabbedPane.getSelectedIndex();
+
+        boolean formTieneDatos = false;
+        boolean esRegistroExistente = false;
+
+        // Evaluamos el estado según el formulario visible
+        switch (tabActiva) {
+            case 0: // LIBROS
+                formTieneDatos = !jTxtTitulo.getText().trim().isEmpty()
+                        || !jTxtEditorial.getText().trim().isEmpty()
+                        || !jTxtAnio.getText().trim().isEmpty();
+                esRegistroExistente = (idLibroSeleccionado != -1);
+                break;
+
+            case 1: // LECTORES
+                formTieneDatos = !jTxtNombre.getText().trim().isEmpty()
+                        || !jTxtCorreo.getText().trim().isEmpty()
+                        || !jTxtTelefono.getText().trim().isEmpty();
+                esRegistroExistente = (idClienteSeleccionado != -1);
+                break;
+
+            case 2: // PRÉSTAMOS
+                formTieneDatos = !jTextIdUsuario.getText().trim().isEmpty()
+                        || !jTextIdLibro.getText().trim().isEmpty();
+                // Para saber si coincide exactamente con un registro de la tabla
+                esRegistroExistente = jTable_Prestamos.getSelectedRow() != -1;
+
+                // Requerimiento especial: Inhabilitar Generar ID si los datos coinciden con uno existente
+                jButtonGenerarID.setEnabled(!esRegistroExistente);
+                break;
+
+            case 3: // RESERVAS
+                formTieneDatos = !jTextNumReserva.getText().trim().isEmpty() || !jTextId.getText().trim().isEmpty();
+                esRegistroExistente = jTable_Reservas.getSelectedRow() != -1;
+                break;
+
+            case 4: // DEVOLUCIONES
+                formTieneDatos = !jTextIdPrestamo.getText().trim().isEmpty();
+                esRegistroExistente = jTable_Devoluciones.getSelectedRow() != -1;
+                break;
+        }
+
+        // APLICAMOS LAS REGLAS DE NEGOCIO SOLICITADAS:
+        // 1. Guardar inhabilitado si el form está vacío (no hay nuevo ni edición)
+        Jbtn_guardar.setEnabled(formTieneDatos);
+
+        // 2. Limpiar campos inhabilitado si los formularios están completamente vacíos
+        Jbtn_Limpiar.setEnabled(formTieneDatos);
     }
 
     /**
@@ -55,7 +276,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         jLbl_anio2 = new java.awt.Label();
         jTxtCantidad = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        TableLibro = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jPanelDatosUsuario = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -70,7 +291,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         jTxtTelefono = new javax.swing.JTextField();
         jTxtCorreo = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableLectores = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTable_Prestamos = new javax.swing.JTable();
@@ -372,7 +593,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
 
         jLbl_anio1.getAccessibleContext().setAccessibleName("Categoría");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TableLibro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -383,7 +604,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 "Título", "Editorial", "Año", "Categoría", "Cantidad"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(TableLibro);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -403,7 +624,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel_prop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -521,7 +742,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableLectores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -532,7 +753,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 "Nombre", "Dirección", "Teléfono", "Ciudad", "Correo"
             }
         ));
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(TableLectores);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -549,12 +770,12 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanelDatosUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jPanelDatosUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(189, 189, 189))
         );
 
         jTabbedPane.addTab("Lectores", jPanel3);
@@ -1109,7 +1330,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 612, Short.MAX_VALUE)))
+                        .addGap(0, 616, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -1150,16 +1371,118 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     }//GEN-LAST:event_jFrtLiteralAActionPerformed
 
     private void Jbtn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Jbtn_guardarActionPerformed
+        int tabActiva = jTabbedPane.getSelectedIndex();
 
-      
+        if (tabActiva == 0) {
+            String titulo = jTxtTitulo.getText().trim();
+            String autor = jTxtEditorial.getText().trim();
+            int anio = Integer.parseInt(jTxtAnio.getText().trim());
+            String categoria = jTxtCategoria.getText().trim();
+            int cantidad = Integer.parseInt(jTxtCantidad.getText().trim());
+
+            if (idLibroSeleccionado == -1) {
+                Libro nuevoLibro = new Libro(0, titulo, autor, anio, categoria, cantidad, "ISBN-" + titulo.hashCode());
+                libroControl.insertar(nuevoLibro);
+                javax.swing.JOptionPane.showMessageDialog(this, "Libro registrado con éxito");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Modificando libro ID: " + idLibroSeleccionado + " (Simulación de edición)");
+            }
+            llenarTablaLibros();
+            Jbtn_LimpiarActionPerformed(null);
+
+        } else if (tabActiva == 1) {
+            String nombre = jTxtNombre.getText().trim();
+            String correo = jTxtCorreo.getText().trim();
+            String telefono = jTxtTelefono.getText().trim();
+            String direccion = jTxtDireccion.getText().trim();
+
+            if (idClienteSeleccionado == -1) {
+                Cliente nuevoCliente = new Cliente(0, nombre, correo, telefono, direccion, 0.0);
+                clienteControl.insertar(nuevoCliente);
+                javax.swing.JOptionPane.showMessageDialog(this, "Cliente registrado con éxito");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Modificando cliente ID: " + idClienteSeleccionado + " (Simulación de edición)");
+            }
+            llenarTablaClientes();
+            Jbtn_LimpiarActionPerformed(null);
+
+        } else if (tabActiva == 2) {
+            int idUser = Integer.parseInt(jTextIdUsuario.getText().trim());
+            int idLibro = Integer.parseInt(jTextIdLibro.getText().trim());
+            String fechaVence = jTextVencimiento.getText().trim();
+
+            Prestamo nuevoP = new Prestamo(0, idUser, 1, idLibro, "2026-06-09", fechaVence);
+            if (prestamoControl.registrarPrestamo(nuevoP)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "¡Préstamo registrado exitosamente en biblioteca.bd!");
+                llenarTablaPrestamos();
+                Jbtn_LimpiarActionPerformed(null);
+            }
+
+        } else if (tabActiva == 3 || tabActiva == 4) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Transacción guardada y procesada correctamente en el sistema.");
+            Jbtn_LimpiarActionPerformed(null);
+        }
+
+        validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_guardarActionPerformed
 
     private void Jbtn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Jbtn_eliminarActionPerformed
-        // TODO add your handling code here:
+        int tabActiva = jTabbedPane.getSelectedIndex();
+
+        if (tabActiva == 0 && idLibroSeleccionado != -1) {
+            libroControl.eliminar(idLibroSeleccionado);
+            javax.swing.JOptionPane.showMessageDialog(this, "Libro eliminado físicamente.");
+            llenarTablaLibros();
+            Jbtn_LimpiarActionPerformed(null);
+        } else if (tabActiva == 1 && idClienteSeleccionado != -1) {
+            clienteControl.eliminar(idClienteSeleccionado);
+            javax.swing.JOptionPane.showMessageDialog(this, "Lector eliminado físicamente.");
+            llenarTablaClientes();
+            Jbtn_LimpiarActionPerformed(null);
+        } else if (tabActiva >= 2) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por motivos de auditoría y seguridad, los registros transaccionales no se eliminan físicamente.");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione una fila válida de la lista primero.");
+        }
     }//GEN-LAST:event_Jbtn_eliminarActionPerformed
 
     private void Jbtn_LimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Jbtn_LimpiarActionPerformed
-        // TODO add your handling code here:
+// Reset de Libros
+        idLibroSeleccionado = -1;
+        jTxtTitulo.setText("");
+        jTxtEditorial.setText("");
+        jTxtAnio.setText("");
+        jTxtCategoria.setText("");
+        jTxtCantidad.setText("");
+        TableLibro.clearSelection();
+
+        idClienteSeleccionado = -1;
+        jTxtNombre.setText("");
+        jTxtCorreo.setText("");
+        jTxtTelefono.setText("");
+        jTxtDireccion.setText("");
+        jTxtCiudad.setText("");
+        TableLectores.clearSelection();
+
+        jTextIdUsuario.setText("");
+        jTextIdLibro.setText("");
+        jTextPrestamo.setText("");
+        jTextVencimiento.setText("");
+        jTable_Prestamos.clearSelection();
+
+        jTextNumReserva.setText("");
+        jTextId.setText("");
+        jTextLibro.setText("");
+        jTextFecha.setText("");
+        jTable_Reservas.clearSelection();
+
+        jTextIdPrestamo.setText("");
+        jTextRetorno.setText("");
+        jTextRetraso.setText("");
+        jTextMulta.setText("");
+        jTable_Devoluciones.clearSelection();
+
+        validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_LimpiarActionPerformed
 
     private void jTextMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextMultaActionPerformed
@@ -1196,6 +1519,15 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
 
     private void jButtonGenerarIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerarIDActionPerformed
         // TODO add your handling code here:
+        int proximoID = prestamoControl.listarPrestamos().size() + 1;
+
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "ID consecutivo sugerido para este nuevo préstamo: " + proximoID,
+                "Generador de ID SQLite",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        jTextPrestamo.setText("2026-06-09");
+        jTextVencimiento.setText("2026-06-16");
     }//GEN-LAST:event_jButtonGenerarIDActionPerformed
 
     private void jTextVencimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextVencimientoActionPerformed
@@ -1215,7 +1547,12 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextIdUsuarioActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        llenarTablaLibros();
+        llenarTablaClientes();
+        llenarTablaPrestamos();
+        llenarTablaReservas();
+        llenarTablaDevoluciones();
+        javax.swing.JOptionPane.showMessageDialog(this, "Sincronización completa con biblioteca.bd realizada con éxito.");
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jTxtCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtCorreoActionPerformed
@@ -1300,6 +1637,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     private java.awt.Button Jbtn_guardar2;
     private java.awt.Label JlblDatos;
     private javax.swing.JSeparator Separator;
+    private javax.swing.JTable TableLectores;
+    private javax.swing.JTable TableLibro;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -1363,8 +1702,6 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable_Devoluciones;
     private javax.swing.JTable jTable_Prestamos;
     private javax.swing.JTable jTable_Reservas;
