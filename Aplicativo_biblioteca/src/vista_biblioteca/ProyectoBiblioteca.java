@@ -104,20 +104,26 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     }
 
     private void llenarTablaReservas() {
-        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha Salida", "Teléfono"};
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha Salida"};
+        DefaultTableModel modelo = (DefaultTableModel) jTable_Reservas.getModel();
+
+        if (modelo.getColumnCount() == 0) {
+            modelo = new DefaultTableModel(columnas, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            jTable_Reservas.setModel(modelo);
+        }
+
+        modelo.setRowCount(0);
 
         modelo.addRow(new Object[]{"RES-001", "Juan Cornejo", "Cien años de soledad", "2026-06-10", "3151234567"});
-        jTable_Reservas.setModel(modelo);
     }
 
     private void llenarTablaDevoluciones() {
-        String[] columnas = {"ID Préstamo", "Lector", "Título", "Fecha Salida", "Teléfono"};
+        String[] columnas = {"ID Préstamo", "Lector", "Título", "Fecha Salida", "Vencimiento"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -125,12 +131,15 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             }
         };
 
-        var lista = prestamoControl.listarPrestamos();
-        for (Object obj : lista) {
-            if (obj instanceof Prestamo) {
-                Prestamo p = (Prestamo) obj;
-                modelo.addRow(new Object[]{p.getId(), p.getIdUser(), p.getIdLibro(), p.getFechaPrestamo(), p.getFechaRetorno()});
-            }
+        java.util.List<Prestamo> lista = prestamoControl.listarPrestamos();
+        for (Prestamo p : lista) {
+            modelo.addRow(new Object[]{
+                p.getId(),
+                "Lector ID: " + p.getIdUser(),
+                "Libro ID: " + p.getIdLibro(),
+                p.getFechaPrestamo(),
+                p.getFechaRetorno()
+            });
         }
         jTable_Devoluciones.setModel(modelo);
     }
@@ -225,7 +234,6 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         boolean formTieneDatos = false;
         boolean esRegistroExistente = false;
 
-        // Evaluamos el estado según el formulario visible
         switch (tabActiva) {
             case 0: // LIBROS
                 formTieneDatos = !jTxtTitulo.getText().trim().isEmpty()
@@ -244,10 +252,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             case 2: // PRÉSTAMOS
                 formTieneDatos = !jTextIdUsuario.getText().trim().isEmpty()
                         || !jTextIdLibro.getText().trim().isEmpty();
-                // Para saber si coincide exactamente con un registro de la tabla
                 esRegistroExistente = jTable_Prestamos.getSelectedRow() != -1;
 
-                // Requerimiento especial: Inhabilitar Generar ID si los datos coinciden con uno existente
                 jButtonGenerarID.setEnabled(!esRegistroExistente);
                 break;
 
@@ -262,11 +268,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 break;
         }
 
-        // APLICAMOS LAS REGLAS DE NEGOCIO SOLICITADAS:
-        // 1. Guardar inhabilitado si el form está vacío (no hay nuevo ni edición)
         Jbtn_guardar.setEnabled(formTieneDatos);
 
-        // 2. Limpiar campos inhabilitado si los formularios están completamente vacíos
         Jbtn_Limpiar.setEnabled(formTieneDatos);
     }
 
@@ -952,20 +955,16 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
 
         jTable_Reservas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "ID Reserva", "Lector", "Título", "Fecha de solicitud", "Teléfono"
+                "ID Reserva", "Lector", "Título", "Fecha de solicitud"
             }
         ));
         jScrollPane3.setViewportView(jTable_Reservas);
-        if (jTable_Reservas.getColumnModel().getColumnCount() > 0) {
-            jTable_Reservas.getColumnModel().getColumn(3).setHeaderValue("Fecha Salida");
-            jTable_Reservas.getColumnModel().getColumn(4).setHeaderValue("Teléfono");
-        }
 
         jPanel10.setBackground(new java.awt.Color(204, 255, 255));
         jPanel10.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -1116,14 +1115,10 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID Reserva", "Lector", "Título", "Fecha de solicitud", "Teléfono"
+                "ID Reserva", "Lector", "Título", "Fecha de solicitud", "Fecha Ingreso"
             }
         ));
         jScrollPane5.setViewportView(jTable_Devoluciones);
-        if (jTable_Devoluciones.getColumnModel().getColumnCount() > 0) {
-            jTable_Devoluciones.getColumnModel().getColumn(3).setHeaderValue("Fecha Salida");
-            jTable_Devoluciones.getColumnModel().getColumn(4).setHeaderValue("Teléfono");
-        }
 
         jPanel13.setBackground(new java.awt.Color(204, 255, 255));
         jPanel13.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -1399,8 +1394,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             llenarTablaLibros();
             Jbtn_LimpiarActionPerformed(null);
 
-        }
-        if (tabActiva == 1) {
+        } else if (tabActiva == 1) {
             String nombre = jTxtNombre.getText().trim();
             String correo = jTxtCorreo.getText().trim();
             String telefono = jTxtTelefono.getText().trim();
@@ -1416,8 +1410,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             llenarTablaClientes();
             Jbtn_LimpiarActionPerformed(null);
 
-        }
-        if (tabActiva == 2) {
+        } else if (tabActiva == 2) {
             int idUser = Integer.parseInt(jTextIdUsuario.getText().trim());
             int idLibro = Integer.parseInt(jTextIdLibro.getText().trim());
             String fechaVence = jTextVencimiento.getText().trim();
@@ -1425,17 +1418,23 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             if (prestamoControl.registrarPrestamo(nuevoP)) {
                 javax.swing.JOptionPane.showMessageDialog(this, "¡Préstamo registrado!");
                 llenarTablaPrestamos();
-                llenarTablaDevoluciones(); // Refrescamos devoluciones ya que hay un nuevo préstamo activo
+                llenarTablaDevoluciones();
                 Jbtn_LimpiarActionPerformed(null);
             }
 
-        }
-        if (tabActiva == 3) {
+        } else if (tabActiva == 3) {
             String numReserva = jTextNumReserva.getText().trim();
-            javax.swing.JOptionPane.showMessageDialog(this, "Reserva N° " + numReserva + " procesada con éxito.");
-            llenarTablaReservas();
-            Jbtn_LimpiarActionPerformed(null);
+            String idLector = jTextId.getText().trim();
+            String libro = jTextLibro.getText().trim();
+            String fecha = jTextFecha.getText().trim();
 
+            DefaultTableModel modelo = (DefaultTableModel) jTable_Reservas.getModel();
+
+            modelo.addRow(new Object[]{numReserva, idLector, libro, fecha, "3151234567"});
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Reserva N° " + numReserva + " procesada con éxito.");
+
+            Jbtn_LimpiarActionPerformed(null);
         } else if (tabActiva == 4) {
             int idPrestamo = Integer.parseInt(jTextIdPrestamo.getText().trim());
             String fechaDev = jTextRetorno.getText().trim();
@@ -1447,6 +1446,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 Jbtn_LimpiarActionPerformed(null);
             }
         }
+
         validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_guardarActionPerformed
 
@@ -1479,14 +1479,12 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         } else if (tabActiva == 2) {
             int filaSeleccionada = jTable_Prestamos.getSelectedRow();
             if (filaSeleccionada != -1) {
-                // Tomamos el ID directamente de la primera columna de la fila seleccionada
                 int idPrestamo = Integer.parseInt(jTable_Prestamos.getValueAt(filaSeleccionada, 0).toString());
 
-                // Usamos tu controlador para borrarlo (Asumiendo que se llama eliminar o eliminarPrestamo)
                 if (prestamoControl.eliminar(idPrestamo)) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Préstamo eliminado de la base de datos.");
                     llenarTablaPrestamos();
-                    llenarTablaDevoluciones(); // Se refresca porque van conectadas
+                    llenarTablaDevoluciones();
                     Jbtn_LimpiarActionPerformed(null);
                 }
             } else {
@@ -1497,10 +1495,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         } else if (tabActiva == 3) {
             int filaSeleccionada = jTable_Reservas.getSelectedRow();
             if (filaSeleccionada != -1) {
-                // Si el ID de la reserva es numérico lo pasas a Int, si no, lo manejas como String
                 String idReserva = jTable_Reservas.getValueAt(filaSeleccionada, 0).toString();
 
-                // Aquí ejecutas la eliminación. Como es una simulación visual para la entrega:
                 javax.swing.JOptionPane.showMessageDialog(this, "Registro de Reserva " + idReserva + " eliminado correctamente.");
                 llenarTablaReservas();
                 Jbtn_LimpiarActionPerformed(null);
@@ -1514,7 +1510,6 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             if (filaSeleccionada != -1) {
                 int idDevolucion = Integer.parseInt(jTable_Devoluciones.getValueAt(filaSeleccionada, 0).toString());
 
-                // Al eliminar una devolución, revierte el estado en el sistema
                 if (prestamoControl.eliminar(idDevolucion)) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Registro de devolución eliminado correctamente.");
                     llenarTablaPrestamos();
@@ -1526,7 +1521,6 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             }
         }
 
-        // Refrescamos los estados de los botones (Guardar/Limpiar) despues del borrado
         validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_eliminarActionPerformed
 
