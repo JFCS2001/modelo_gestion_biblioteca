@@ -102,7 +102,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     }
 
     private void llenarTablaReservas() {
-        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha Salida", "Teléfono"};
+        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha Salida"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -1229,10 +1229,17 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         }
         if (tabActiva == 3) {
             String numReserva = jTextNumReserva.getText().trim();
-            javax.swing.JOptionPane.showMessageDialog(this, "Reserva N° " + numReserva + " procesada con éxito.");
-            llenarTablaReservas();
-            Jbtn_LimpiarActionPerformed(null);
+            String idLector = jTextId.getText().trim();
+            String libro = jTextLibro.getText().trim();
+            String fecha = jTextFecha.getText().trim();
 
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) jTable_Reservas.getModel();
+
+            modelo.addRow(new Object[]{numReserva, idLector, libro, fecha, "3151234567"});
+
+            // 4. Avisamos al usuario y limpiamos los campos de texto
+            javax.swing.JOptionPane.showMessageDialog(this, "Reserva N° " + numReserva + " procesada con éxito.");
+            Jbtn_LimpiarActionPerformed(null);
         }
         validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_guardarActionPerformed
