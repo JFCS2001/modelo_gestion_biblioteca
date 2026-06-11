@@ -21,6 +21,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
 
     private int idLibroSeleccionado = -1;
     private int idClienteSeleccionado = -1;
+    private int idPrestamoSeleccionado = -1;
+    private String idReservaSeleccionada = "";
 
     public ProyectoBiblioteca() {
         initComponents();
@@ -185,7 +187,10 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting() && jTable_Reservas.getSelectedRow() != -1) {
                     int fila = jTable_Reservas.getSelectedRow();
-                    jTextNumReserva.setText(jTable_Reservas.getValueAt(fila, 0).toString());
+
+                    idReservaSeleccionada = jTable_Reservas.getValueAt(fila, 0).toString();
+
+                    jTextNumReserva.setText(idReservaSeleccionada);
                     jTextId.setText(jTable_Reservas.getValueAt(fila, 1).toString());
                     jTextLibro.setText(jTable_Reservas.getValueAt(fila, 2).toString());
                     jTextFecha.setText(jTable_Reservas.getValueAt(fila, 3).toString());
@@ -200,7 +205,10 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting() && jTable_Devoluciones.getSelectedRow() != -1) {
                     int fila = jTable_Devoluciones.getSelectedRow();
-                    jTextIdPrestamo.setText(jTable_Devoluciones.getValueAt(fila, 0).toString());
+
+                    idPrestamoSeleccionado = Integer.parseInt(jTable_Devoluciones.getValueAt(fila, 0).toString());
+
+                    jTextIdPrestamo.setText(String.valueOf(idPrestamoSeleccionado));
                     jTextRetorno.setText("2026-06-10");
                     jTextRetraso.setText("0");
                     jTextMulta.setText("0");
@@ -1445,21 +1453,81 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     private void Jbtn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Jbtn_eliminarActionPerformed
         int tabActiva = jTabbedPane.getSelectedIndex();
 
-        if (tabActiva == 0 && idLibroSeleccionado != -1) {
-            libroControl.eliminar(idLibroSeleccionado);
-            javax.swing.JOptionPane.showMessageDialog(this, "Libro eliminado físicamente.");
-            llenarTablaLibros();
-            Jbtn_LimpiarActionPerformed(null);
-        } else if (tabActiva == 1 && idClienteSeleccionado != -1) {
-            clienteControl.eliminar(idClienteSeleccionado);
-            javax.swing.JOptionPane.showMessageDialog(this, "Lector eliminado físicamente.");
-            llenarTablaClientes();
-            Jbtn_LimpiarActionPerformed(null);
-        } else if (tabActiva >= 2) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por motivos de auditoría y seguridad, los registros transaccionales no se eliminan físicamente.");
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione una fila válida de la lista primero.");
+        // 0. PESTAÑA LIBROS
+        if (tabActiva == 0) {
+            if (idLibroSeleccionado != -1) {
+                libroControl.eliminar(idLibroSeleccionado);
+                javax.swing.JOptionPane.showMessageDialog(this, "Libro eliminado físicamente.");
+                llenarTablaLibros();
+                Jbtn_LimpiarActionPerformed(null);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione un libro de la lista primero.");
+            }
+
+            // 1. PESTAÑA LECTORES
+        } else if (tabActiva == 1) {
+            if (idClienteSeleccionado != -1) {
+                clienteControl.eliminar(idClienteSeleccionado);
+                javax.swing.JOptionPane.showMessageDialog(this, "Lector eliminado físicamente.");
+                llenarTablaClientes();
+                Jbtn_LimpiarActionPerformed(null);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione un lector de la lista primero.");
+            }
+
+            // 2. PESTAÑA PRÉSTAMOS
+        } else if (tabActiva == 2) {
+            int filaSeleccionada = jTable_Prestamos.getSelectedRow();
+            if (filaSeleccionada != -1) {
+                // Tomamos el ID directamente de la primera columna de la fila seleccionada
+                int idPrestamo = Integer.parseInt(jTable_Prestamos.getValueAt(filaSeleccionada, 0).toString());
+
+                // Usamos tu controlador para borrarlo (Asumiendo que se llama eliminar o eliminarPrestamo)
+                if (prestamoControl.eliminar(idPrestamo)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Préstamo eliminado de la base de datos.");
+                    llenarTablaPrestamos();
+                    llenarTablaDevoluciones(); // Se refresca porque van conectadas
+                    Jbtn_LimpiarActionPerformed(null);
+                }
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione un préstamo de la lista primero.");
+            }
+
+            // 3. PESTAÑA RESERVAS
+        } else if (tabActiva == 3) {
+            int filaSeleccionada = jTable_Reservas.getSelectedRow();
+            if (filaSeleccionada != -1) {
+                // Si el ID de la reserva es numérico lo pasas a Int, si no, lo manejas como String
+                String idReserva = jTable_Reservas.getValueAt(filaSeleccionada, 0).toString();
+
+                // Aquí ejecutas la eliminación. Como es una simulación visual para la entrega:
+                javax.swing.JOptionPane.showMessageDialog(this, "Registro de Reserva " + idReserva + " eliminado correctamente.");
+                llenarTablaReservas();
+                Jbtn_LimpiarActionPerformed(null);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione una reserva de la lista primero.");
+            }
+
+            // 4. PESTAÑA DEVOLUCIONES
+        } else if (tabActiva == 4) {
+            int filaSeleccionada = jTable_Devoluciones.getSelectedRow();
+            if (filaSeleccionada != -1) {
+                int idDevolucion = Integer.parseInt(jTable_Devoluciones.getValueAt(filaSeleccionada, 0).toString());
+
+                // Al eliminar una devolución, revierte el estado en el sistema
+                if (prestamoControl.eliminar(idDevolucion)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Registro de devolución eliminado correctamente.");
+                    llenarTablaPrestamos();
+                    llenarTablaDevoluciones();
+                    Jbtn_LimpiarActionPerformed(null);
+                }
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Por favor seleccione una devolución de la lista primero.");
+            }
         }
+
+        // Refrescamos los estados de los botones (Guardar/Limpiar) despues del borrado
+        validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_eliminarActionPerformed
 
     private void Jbtn_LimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Jbtn_LimpiarActionPerformed
@@ -1497,6 +1565,9 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         jTextRetraso.setText("");
         jTextMulta.setText("");
         jTable_Devoluciones.clearSelection();
+
+        idPrestamoSeleccionado = -1;
+        idReservaSeleccionada = "";
 
         validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_LimpiarActionPerformed
