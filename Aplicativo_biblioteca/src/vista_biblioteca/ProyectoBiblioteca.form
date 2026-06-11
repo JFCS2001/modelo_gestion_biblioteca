@@ -269,12 +269,11 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="label1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTabbedPane" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTabbedPane" min="-2" pref="1160" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="616" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -1099,7 +1098,7 @@
                           <Component id="jPanel9" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="443" max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="1342" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
