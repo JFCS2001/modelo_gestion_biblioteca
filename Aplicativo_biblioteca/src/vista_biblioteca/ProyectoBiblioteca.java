@@ -503,7 +503,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         jLbl_titulo.setText("Titulo");
 
         jLbl_editorial.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jLbl_editorial.setText("Editorial");
+        jLbl_editorial.setText("Autor");
 
         jLbl_anio.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLbl_anio.setText("Año");
@@ -626,7 +626,7 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Título", "Editorial", "Año", "Categoría", "Cantidad"
+                "Título", "Autor", "Año", "Categoría", "Cantidad"
             }
         ));
         jScrollPane2.setViewportView(TableLibro);
