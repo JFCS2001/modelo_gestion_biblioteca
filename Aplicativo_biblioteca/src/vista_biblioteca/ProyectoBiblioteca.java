@@ -46,6 +46,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
         jTxtTitulo.addKeyListener(tecladoListener);
         jTxtNombre.addKeyListener(tecladoListener);
         jTextIdUsuario.addKeyListener(tecladoListener);
+        jTextNumReserva.addKeyListener(tecladoListener);
+        jTextIdPrestamo.addKeyListener(tecladoListener);
 
         validarEstadosBotones();
     }
@@ -100,14 +102,34 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
     }
 
     private void llenarTablaReservas() {
-        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha de solicitud", "Teléfono"};
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+        String[] columnas = {"ID Reserva", "Lector", "Título", "Fecha Salida", "Teléfono"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        modelo.addRow(new Object[]{"RES-001", "Juan Cornejo", "Cien años de soledad", "2026-06-10", "3151234567"});
         jTable_Reservas.setModel(modelo);
     }
 
     private void llenarTablaDevoluciones() {
-        String[] columnas = {"ID Préstamo", "Lector", "Título", "Fecha Salida", "Vencimiento"};
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+        String[] columnas = {"ID Préstamo", "Lector", "Título", "Fecha Salida", "Teléfono"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        var lista = prestamoControl.listarPrestamos();
+        for (Object obj : lista) {
+            if (obj instanceof Prestamo) {
+                Prestamo p = (Prestamo) obj;
+                modelo.addRow(new Object[]{p.getId(), p.getIdUser(), p.getIdLibro(), p.getFechaPrestamo(), p.getFechaRetorno()});
+            }
+        }
         jTable_Devoluciones.setModel(modelo);
     }
 
@@ -158,27 +180,33 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             }
         });
 
-        jTable_Reservas.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && jTable_Reservas.getSelectedRow() != -1) {
-                int fila = jTable_Reservas.getSelectedRow();
-                jTextNumReserva.setText(jTable_Reservas.getValueAt(fila, 0).toString());
-                jTextId.setText(jTable_Reservas.getValueAt(fila, 1).toString());
-                jTextLibro.setText(jTable_Reservas.getValueAt(fila, 2).toString());
-                jTextFecha.setText(jTable_Reservas.getValueAt(fila, 3).toString());
+        jTable_Reservas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && jTable_Reservas.getSelectedRow() != -1) {
+                    int fila = jTable_Reservas.getSelectedRow();
+                    jTextNumReserva.setText(jTable_Reservas.getValueAt(fila, 0).toString());
+                    jTextId.setText(jTable_Reservas.getValueAt(fila, 1).toString());
+                    jTextLibro.setText(jTable_Reservas.getValueAt(fila, 2).toString());
+                    jTextFecha.setText(jTable_Reservas.getValueAt(fila, 3).toString());
 
-                validarEstadosBotones();
+                    validarEstadosBotones();
+                }
             }
         });
 
-        jTable_Devoluciones.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && jTable_Devoluciones.getSelectedRow() != -1) {
-                int fila = jTable_Devoluciones.getSelectedRow();
-                jTextIdPrestamo.setText(jTable_Devoluciones.getValueAt(fila, 0).toString());
-                jTextRetorno.setText("2026-06-09");
-                jTextRetraso.setText("0");
-                jTextMulta.setText("0");
+        jTable_Devoluciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && jTable_Devoluciones.getSelectedRow() != -1) {
+                    int fila = jTable_Devoluciones.getSelectedRow();
+                    jTextIdPrestamo.setText(jTable_Devoluciones.getValueAt(fila, 0).toString());
+                    jTextRetorno.setText("2026-06-10");
+                    jTextRetraso.setText("0");
+                    jTextMulta.setText("0");
 
-                validarEstadosBotones();
+                    validarEstadosBotones();
+                }
             }
         });
     }
@@ -1390,7 +1418,8 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             llenarTablaLibros();
             Jbtn_LimpiarActionPerformed(null);
 
-        } else if (tabActiva == 1) {
+        }
+        if (tabActiva == 1) {
             String nombre = jTxtNombre.getText().trim();
             String correo = jTxtCorreo.getText().trim();
             String telefono = jTxtTelefono.getText().trim();
@@ -1406,23 +1435,37 @@ public class ProyectoBiblioteca extends javax.swing.JFrame {
             llenarTablaClientes();
             Jbtn_LimpiarActionPerformed(null);
 
-        } else if (tabActiva == 2) {
+        }
+        if (tabActiva == 2) {
             int idUser = Integer.parseInt(jTextIdUsuario.getText().trim());
             int idLibro = Integer.parseInt(jTextIdLibro.getText().trim());
             String fechaVence = jTextVencimiento.getText().trim();
-
-            Prestamo nuevoP = new Prestamo(0, idUser, 1, idLibro, "2026-06-09", fechaVence);
+            Prestamo nuevoP = new Prestamo(0, idUser, 1, idLibro, "2026-06-10", fechaVence);
             if (prestamoControl.registrarPrestamo(nuevoP)) {
-                javax.swing.JOptionPane.showMessageDialog(this, "¡Préstamo registrado exitosamente en biblioteca.bd!");
+                javax.swing.JOptionPane.showMessageDialog(this, "¡Préstamo registrado!");
                 llenarTablaPrestamos();
+                llenarTablaDevoluciones(); // Refrescamos devoluciones ya que hay un nuevo préstamo activo
                 Jbtn_LimpiarActionPerformed(null);
             }
 
-        } else if (tabActiva == 3 || tabActiva == 4) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Transacción guardada y procesada correctamente en el sistema.");
-            Jbtn_LimpiarActionPerformed(null);
         }
+        if (tabActiva == 3) {
+            String numReserva = jTextNumReserva.getText().trim();
+            javax.swing.JOptionPane.showMessageDialog(this, "Reserva N° " + numReserva + " procesada con éxito.");
+            llenarTablaReservas();
+            Jbtn_LimpiarActionPerformed(null);
 
+        } else if (tabActiva == 4) {
+            int idPrestamo = Integer.parseInt(jTextIdPrestamo.getText().trim());
+            String fechaDev = jTextRetorno.getText().trim();
+
+            if (prestamoControl.registrarDevolucion(idPrestamo, fechaDev)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Devolución exitosa. El libro ha retornado al inventario.");
+                llenarTablaPrestamos();
+                llenarTablaDevoluciones();
+                Jbtn_LimpiarActionPerformed(null);
+            }
+        }
         validarEstadosBotones();
     }//GEN-LAST:event_Jbtn_guardarActionPerformed
 
