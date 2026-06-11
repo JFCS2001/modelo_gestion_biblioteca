@@ -67,4 +67,18 @@ public class PrestamoController {
             return false;
         }
     }
+
+    public boolean eliminar(int idPrestamo) {
+        String sql = "DELETE FROM Prestamo WHERE IdPrestamo = ?";
+        try (Connection conn = conexion_sqlite.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idPrestamo);
+            int filasAfectadas = pstmt.executeUpdate();
+
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar préstamo: " + e.getMessage());
+            return false;
+        }
+    }
 }
